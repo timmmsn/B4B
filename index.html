@@ -86,7 +86,8 @@
             Share2: () => <span>🔗</span>,
             Folder: () => <span>📂</span>,
             Server: () => <span>🗄️</span>,
-            Key: () => <span>🔑</span> 
+            Key: () => <span>🔑</span>,
+            PowerOff: () => <span>🛑</span> // Added PowerOff icon
         };
 
         // --- 通用組件 ---
@@ -146,7 +147,7 @@
 
         // --- 主程式 ---
         function RPiLearningGuide() {
-            const [activeTab, setActiveTab] = useState('fileshare'); // Default to fileshare for this query
+            const [activeTab, setActiveTab] = useState('tips'); // Default to tips to show the answer
             const [expandedModule, setExpandedModule] = useState(null);
             const [copied, setCopied] = useState(false);
 
@@ -880,10 +881,27 @@
                                     </p>
                                 </div>
                                 <div className="grid md:grid-cols-2 gap-6">
-                                    <Card className="p-6"><h4 className="font-bold text-slate-800 mb-2"><Icons.Activity /> 看門狗 (Watchdog)</h4><p className="text-sm text-slate-600">啟用硬體看門狗，當機時自動重啟，無需人工介入。<br/><code>sudo apt install watchdog</code></p></Card>
-                                    <Card className="p-6"><h4 className="font-bold text-slate-800 mb-2"><Icons.Lock /> 檔案保護 (OverlayFS)</h4><p className="text-sm text-slate-600">啟用唯讀模式，防止斷電造成系統損毀。<br/><code>raspi-config &gt; Performance &gt; OverlayFS</code></p></Card>
+                                    <Card className="p-6">
+                                        <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2"><Icons.PowerOff /> 4. 開關機控制 (Power Control)</h4>
+                                        <div className="space-y-3 text-sm text-slate-600">
+                                            <p>樹莓派關機後不會自己醒來，解決方法：</p>
+                                            <ul className="list-disc pl-5 space-y-2">
+                                                <li>
+                                                    <strong>原生秘技 (GPIO 3)：</strong><br/>
+                                                    將 Pin 5 (SCL/GPIO 3) 與 Pin 6 (GND) 短路一下，即可喚醒關機狀態的樹莓派。<br/>
+                                                    <span className="text-xs text-blue-600">* 適合做成治具上的實體按鈕。</span>
+                                                </li>
+                                                <li>
+                                                    <strong>硬體解法：</strong><br/>
+                                                    購買帶有實體開關的 USB-C 電源線，直接切斷再供電。
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </Card>
+                                    <Card className="p-6"><h4 className="font-bold text-slate-800 mb-2"><Icons.Activity /> 1. 看門狗 (Watchdog)</h4><p className="text-sm text-slate-600">啟用硬體看門狗，當機時自動重啟，無需人工介入。<br/><code>sudo apt install watchdog</code></p></Card>
+                                    <Card className="p-6"><h4 className="font-bold text-slate-800 mb-2"><Icons.Lock /> 2. 檔案保護 (OverlayFS)</h4><p className="text-sm text-slate-600">啟用唯讀模式，防止斷電造成系統損毀。<br/><code>raspi-config &gt; Performance &gt; OverlayFS</code></p></Card>
                                     <Card className="p-6 col-span-1 md:col-span-2 bg-slate-900 text-slate-300">
-                                        <h4 className="font-bold text-white mb-2"><Icons.Code /> 狀態機 (State Machine)</h4>
+                                        <h4 className="font-bold text-white mb-2"><Icons.Code /> 3. 狀態機 (State Machine)</h4>
                                         <p className="text-xs mb-2">產測程式架構範例</p>
                                         <pre className="bg-black p-3 rounded font-mono text-xs overflow-x-auto">
 {`class State(Enum):
