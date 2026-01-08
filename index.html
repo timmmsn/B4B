@@ -19,9 +19,6 @@
         #loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f8fafc; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; color: #475569; }
         .spinner { border: 4px solid #e2e8f0; border-top: 4px solid #3b82f6; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 1rem; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        /* 隱藏捲軸但保留功能 */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800">
@@ -87,7 +84,7 @@
             Folder: () => <span>📂</span>,
             Server: () => <span>🗄️</span>,
             Key: () => <span>🔑</span>,
-            PowerOff: () => <span>🛑</span> // Added PowerOff icon
+            PowerOff: () => <span>🛑</span>
         };
 
         // --- 通用組件 ---
@@ -126,18 +123,18 @@
             };
 
             return (
-                <div className="flex items-center justify-center text-xs font-mono my-0.5 w-full">
+                <div className="flex items-center justify-center text-[10px] sm:text-xs font-mono my-0.5 w-full">
                     <div className="flex-1 text-right pr-2 hidden sm:block text-slate-500 truncate">{nameLeft}</div>
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center shadow-sm text-[10px] flex-shrink-0 ${getTypeColor(typeLeft)}`}>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center shadow-sm text-[9px] flex-shrink-0 ${getTypeColor(typeLeft)}`}>
                         {numLeft}
                     </div>
                     
-                    <div className="w-16 h-4 bg-slate-200 mx-2 flex items-center justify-center rounded border border-slate-300 relative flex-shrink-0">
+                    <div className="w-12 h-4 bg-slate-200 mx-2 flex items-center justify-center rounded border border-slate-300 relative flex-shrink-0">
                         <div className="w-1 h-1 bg-slate-400 rounded-full mx-1"></div>
                         <div className="w-1 h-1 bg-slate-400 rounded-full mx-1"></div>
                     </div>
 
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center shadow-sm text-[10px] flex-shrink-0 ${getTypeColor(typeRight)}`}>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center shadow-sm text-[9px] flex-shrink-0 ${getTypeColor(typeRight)}`}>
                         {numRight}
                     </div>
                     <div className="flex-1 text-left pl-2 hidden sm:block text-slate-500 truncate">{nameRight}</div>
@@ -147,7 +144,7 @@
 
         // --- 主程式 ---
         function RPiLearningGuide() {
-            const [activeTab, setActiveTab] = useState('tips'); // Default to tips to show the answer
+            const [activeTab, setActiveTab] = useState('roadmap');
             const [expandedModule, setExpandedModule] = useState(null);
             const [copied, setCopied] = useState(false);
 
@@ -177,12 +174,12 @@
             ];
 
             const roadmapSteps = [
-                { id: 1, title: "階段一：硬體認識與系統建置", icon: <Icons.Cpu />, desc: "熟悉 Raspberry Pi 4B 架構與 OS 安裝", content: ["硬體解剖：BCM2711 CPU, USB 3.0 vs 2.0", "電源管理：為什麼 5V/3A 是必須的？", "系統安裝：使用 Raspberry Pi Imager 燒錄 OS", "基礎設定：開啟 SSH, VNC, I2C, UART", "遠端連線：設定固定 IP"], arduinoDiff: "Arduino 是單晶片(跑韌體)，樹莓派是微電腦(跑OS)。" },
-                { id: 2, title: "階段二：Linux 系統操作基礎", icon: <Icons.Terminal />, desc: "習慣指令列 (Terminal) 操作", content: ["檔案管理：ls, cd, cp, mv, rm", "權限管理：sudo, chmod", "軟體安裝：apt update/upgrade", "編輯器：nano 或 vim", "查看狀態：htop, dmesg"], arduinoDiff: "Arduino 沒有檔案系統；樹莓派有完整的 Linux 結構。" },
-                { id: 3, title: "階段三：Python 開發環境", icon: <Icons.Code />, desc: "建立穩定的 Python 虛擬環境", content: ["理解 PEP 668：為什麼不能直接 pip install？", "虛擬環境：venv 的建立與啟動", "IDE 選擇：Thonny vs VS Code", "套件管理：gpiozero, pyserial, pandas"], arduinoDiff: "Python 是直譯式語言，即寫即跑，除錯方便。" },
-                { id: 4, title: "階段四：硬體控制 (GPIO & 通訊)", icon: <Icons.Settings />, desc: "連接感測器、繼電器與儀器", content: ["GPIO 基礎：LED, 按鈕, Relay", "電位注意：3.3V 邏輯電位", "序列通訊：UART (RS232/485)", "匯流排：I2C, SPI"], arduinoDiff: "RPi GPIO 僅耐受 3.3V，接 5V 會燒毀！" },
-                { id: 5, title: "階段五：產測 GUI 與自動化", icon: <Icons.Monitor />, desc: "開發作業員介面", content: ["GUI 框架：Tkinter 或 PySide6", "多執行緒：QThread/threading", "掃描槍整合", "自動開機：Systemd Service"], arduinoDiff: "RPi 可直接 HDMI 輸出介面，無需外接螢幕模組。" },
-                { id: 6, title: "階段六：資料庫與可靠度", icon: <Icons.Database />, desc: "讓系統 24/7 穩定運行", content: ["資料儲存：CSV 或 SQLite", "Log 系統：完整的測試紀錄", "看門狗：當機自動重啟", "唯讀系統 (OverlayFS)"], arduinoDiff: "RPi 擁有強大的儲存與連網能力。" }
+                { id: 1, title: "階段一：硬體認識與系統建置", icon: <Icons.Cpu />, desc: "熟悉 Raspberry Pi 4B 架構與 OS 安裝", content: ["硬體解剖：BCM2711 CPU, USB 3.0 vs 2.0, 雙 Micro HDMI", "電源管理：為什麼 5V/3A 是必須的？(低電壓警告圖示)", "系統安裝：使用 Raspberry Pi Imager 燒錄 OS (建議 64-bit)", "基礎設定：開啟 SSH, VNC, I2C, UART (raspi-config)", "遠端連線：設定固定 IP 與 AnyDesk/RealVNC"], arduinoDiff: "Arduino 是單晶片(跑韌體)，樹莓派是微電腦(跑作業系統)。開關機需要時間，不能直接斷電。" },
+                { id: 2, title: "階段二：Linux 系統操作基礎", icon: <Icons.Terminal />, desc: "習慣指令列 (Terminal) 操作", content: ["檔案管理：ls, cd, cp, mv, rm, mkdir", "權限管理：sudo, chmod, chown (解決 Permission denied)", "軟體安裝：apt update/upgrade, apt install", "編輯器：nano 或 vim 的基本操作", "查看狀態：htop (CPU/RAM), dmesg (硬體訊息), vcgencmd (溫度/電壓)"], arduinoDiff: "Arduino 沒有檔案系統概念；樹莓派有完整的 Linux 檔案結構 (/dev, /etc, /home)。" },
+                { id: 3, title: "階段三：Python 開發環境", icon: <Icons.Code />, desc: "建立穩定的 Python 虛擬環境", content: ["理解 PEP 668：為什麼不能直接 pip install？", "虛擬環境：venv 的建立、啟動與退出", "IDE 選擇：Thonny (內建/簡單) vs VS Code (強大/遠端)", "套件管理：安裝 gpiozero, pyserial, pandas, pyside6"], arduinoDiff: "Arduino 使用 C++ 編譯上傳；Python 是直譯式語言，即寫即跑，除錯更方便。" },
+                { id: 4, title: "階段四：硬體控制 (GPIO & 通訊)", icon: <Icons.Settings />, desc: "連接感測器、繼電器與儀器", content: ["GPIO 基礎：數位輸入/輸出 (LED, 按鈕, Relay)", "電位注意：3.3V 邏輯電位 (接 5V 需降壓！)", "序列通訊：UART (RS232/485) 控制電表、電源供應器", "匯流排：I2C (溫濕度、OLED), SPI (ADC 模組)"], arduinoDiff: "樹莓派 GPIO 僅耐受 3.3V，Arduino 是 5V。直接連接會燒毀樹莓派！" },
+                { id: 5, title: "階段五：產測 GUI 與自動化", icon: <Icons.Monitor />, desc: "開發給作業員使用的圖形介面", content: ["GUI 框架：Tkinter (簡單) 或 PySide6/PyQt (美觀)", "多執行緒：QThread 或 threading (避免介面卡死)", "掃描槍整合：處理 HID 鍵盤輸入或 Serial 掃描槍", "自動開機：設定 Systemd Service 開機自啟動程式"], arduinoDiff: "樹莓派可直接透過 HDMI 輸出高解析度操作介面，無需外接 Serial Screen。" },
+                { id: 6, title: "階段六：資料庫與可靠度優化", icon: <Icons.Database />, desc: "讓產測系統 24/7 穩定運行", content: ["資料儲存：CSV 檔案或是 SQLite/MySQL 資料庫", "Log 系統：完整的測試紀錄與錯誤追蹤", "看門狗 (Watchdog)：當機自動重啟機制", "唯讀系統 (OverlayFS)：防止斷電損壞 SD 卡"], arduinoDiff: "樹莓派擁有強大的儲存與連網能力，可輕易實現 MES 系統對接。" }
             ];
 
             return (
@@ -205,13 +202,13 @@
                         <div className="flex flex-wrap gap-2 border-b border-slate-200 pb-2">
                             {[
                                 { id: 'roadmap', label: '學習規劃流程', icon: <Icons.BookOpen /> },
-                                { id: 'fileshare', label: '檔案分享 (Samba)', icon: <Icons.Share2 /> },
+                                { id: 'specs', label: '硬體規格詳解', icon: <Icons.FileText /> },
+                                { id: 'hardware', label: '硬體選購', icon: <Icons.HardDrive /> },
                                 { id: 'python', label: 'Python 環境', icon: <Icons.Code /> },
+                                { id: 'fileshare', label: '檔案分享 (Samba)', icon: <Icons.Share2 /> },
                                 { id: 'software', label: '常用軟體', icon: <Icons.Package /> },
                                 { id: 'remote', label: '遠端連線', icon: <Icons.Cast /> },
                                 { id: 'troubleshoot', label: '疑難排解', icon: <Icons.Wrench /> },
-                                { id: 'specs', label: '硬體規格', icon: <Icons.FileText /> },
-                                { id: 'hardware', label: '硬體選購', icon: <Icons.HardDrive /> },
                                 { id: 'gallery', label: '配置圖解', icon: <Icons.Image /> },
                                 { id: 'tips', label: '穩定秘訣', icon: <Icons.CheckCircle /> },
                             ].map(tab => (
@@ -251,16 +248,16 @@
                                             <p className="text-sm text-slate-300 mb-4">目前工業應用最成熟的型號，效能足以應付複雜的 GUI 與資料庫。</p>
                                             <div className="grid grid-cols-2 gap-4 text-xs">
                                                 <div className="bg-slate-800 p-3 rounded border border-slate-700">
-                                                    <strong className="text-green-400 block mb-1">SoC</strong> BCM2711 Cortex-A72
+                                                    <strong className="text-green-400 block mb-1">SoC</strong> Broadcom BCM2711, Quad core 1.5GHz
                                                 </div>
                                                 <div className="bg-slate-800 p-3 rounded border border-slate-700">
-                                                    <strong className="text-blue-400 block mb-1">RAM</strong> 建議選用 4GB
+                                                    <strong className="text-blue-400 block mb-1">RAM</strong> 提供 2GB, 4GB, 8GB。產測建議 4GB。
                                                 </div>
                                                 <div className="bg-slate-800 p-3 rounded border border-slate-700">
-                                                    <strong className="text-purple-400 block mb-1">介面</strong> 雙 HDMI, USB 3.0
+                                                    <strong className="text-purple-400 block mb-1">顯示</strong> 2x Micro HDMI (支援 4K)
                                                 </div>
                                                 <div className="bg-slate-800 p-3 rounded border border-slate-700">
-                                                    <strong className="text-yellow-400 block mb-1">豐富介面</strong> 2x USB 3.0, Gigabit Lan
+                                                    <strong className="text-yellow-400 block mb-1">周邊</strong> 2x USB 3.0, Gigabit Lan
                                                 </div>
                                             </div>
                                         </div>
@@ -287,7 +284,7 @@
                                                             </div>
                                                             <div className="flex items-start gap-2 text-sm bg-amber-50 text-amber-800 p-3 rounded-lg">
                                                                 <Icons.AlertTriangle />
-                                                                <span><strong>差異：</strong> {step.arduinoDiff}</span>
+                                                                <span><strong>與 Arduino 的差異：</strong> {step.arduinoDiff}</span>
                                                             </div>
                                                         </div>
                                                     )}
@@ -299,488 +296,22 @@
                             </div>
                         )}
 
-                        {/* 1.5 File Share (Samba) */}
-                        {activeTab === 'fileshare' && (
-                            <div className="space-y-6 animate-fadeIn">
-                                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
-                                    <h3 className="font-bold text-blue-900 flex items-center gap-2">
-                                        <Icons.Share2 /> 網路芳鄰 (Samba)
-                                    </h3>
-                                    <p className="text-blue-800 mt-1 text-sm">
-                                        讓 Windows 電腦可以透過區域網路，像存取本機資料夾一樣存取樹莓派的檔案。
-                                    </p>
-                                </div>
-                                <div className="grid md:grid-cols-2 gap-6">
-                                    <Card className="p-6">
-                                        <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2"><Icons.Terminal /> 步驟 1: 安裝 Samba</h4>
-                                        <p className="text-sm text-slate-600 mb-2">更新套件列表並安裝 Samba 服務：</p>
-                                        <code className="block bg-slate-800 text-green-400 p-3 rounded font-mono text-xs">
-                                            sudo apt update<br/>
-                                            sudo apt install samba samba-common-bin -y
-                                        </code>
-                                    </Card>
-
-                                    <Card className="p-6 border-l-4 border-l-purple-500">
-                                        <h4 className="font-bold text-purple-800 mb-2 flex items-center gap-2"><Icons.Settings /> 步驟 2: 修改設定檔</h4>
-                                        <div className="space-y-2 text-sm text-slate-600">
-                                            <p>開啟設定檔：<code className="bg-slate-100 px-1">sudo nano /etc/samba/smb.conf</code></p>
-                                            <p>捲動到最下方，加入以下內容 (分享 /home/gt)：</p>
-                                            <div className="bg-slate-100 p-2 rounded border border-slate-200 font-mono text-xs text-slate-800">
-                                                [gt]<br/>
-                                                path = /home/gt<br/>
-                                                browseable = yes<br/>
-                                                writeable = yes<br/>
-                                                only guest = no<br/>
-                                                create mask = 0644<br/>
-                                                directory mask = 0755<br/>
-                                                public = no
-                                            </div>
-                                            <p className="text-xs text-slate-500">* 按 <code>Ctrl+O</code> 儲存，<code>Ctrl+X</code> 離開。</p>
-                                        </div>
-                                    </Card>
-                                    
-                                    {/* New Advanced Step */}
-                                    <Card className="p-6 border-l-4 border-l-green-500">
-                                        <h4 className="font-bold text-green-800 mb-2 flex items-center gap-2"><Icons.Folder /> 進階: 分享第二顆硬碟/USB</h4>
-                                        <div className="space-y-2 text-sm text-slate-600">
-                                            <p>若要分享額外的 USB 儲存區，請在設定檔最後再加入一個區塊：</p>
-                                            <div className="bg-slate-100 p-2 rounded border border-slate-200 font-mono text-xs text-slate-800">
-                                                [USB] <span className="text-slate-400"># 這是 Windows 看到的資料夾名稱</span><br/>
-                                                path = /media<br/>
-                                                browseable = yes<br/>
-                                                writeable = yes<br/>
-                                                public = no
-                                            </div>
-                                            <p className="text-xs text-amber-600 flex items-center gap-1"><Icons.AlertTriangle size={12}/> 這樣設定會分享整個 /media 目錄下的所有裝置。</p>
-                                        </div>
-                                    </Card>
-
-                                    <Card className="p-6">
-                                        <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2"><Icons.Lock /> 步驟 3: 設定連線密碼</h4>
-                                        <p className="text-sm text-slate-600 mb-2">
-                                            Samba 的密碼是獨立的，需要手動設定 (建議設為跟登入密碼一樣，方便記憶)。
-                                        </p>
-                                        <code className="block bg-slate-800 text-green-400 p-3 rounded font-mono text-xs">
-                                            sudo smbpasswd -a gt<br/>
-                                            # 輸入兩次密碼<br/><br/>
-                                            # 重啟服務讓設定生效<br/>
-                                            sudo systemctl restart smbd
-                                        </code>
-                                    </Card>
-
-                                    <Card className="p-6 border-l-4 border-l-blue-500 col-span-1 md:col-span-2">
-                                        <h4 className="font-bold text-blue-800 mb-2 flex items-center gap-2"><Icons.Monitor /> 步驟 4: Windows 連線</h4>
-                                        <div className="space-y-2 text-sm text-slate-600">
-                                            <p>1. 確認樹莓派 IP (例如 192.168.1.100)。</p>
-                                            <p>2. 在 Windows 檔案總管網址列輸入：</p>
-                                            <code className="block bg-blue-50 p-2 rounded border border-blue-100 font-mono text-blue-900 text-xs">
-                                                \\192.168.1.100\gt
-                                            </code>
-                                            <p>或是輸入 <code className="bg-blue-50 px-1 rounded">\\192.168.1.100\USB</code> 來存取外接硬碟。</p>
-                                            <p>3. 輸入帳號 <code>gt</code> 及剛剛設定的密碼。</p>
-                                            <div className="mt-2 flex items-center gap-2 text-xs text-amber-600 bg-amber-50 p-2 rounded">
-                                                <Icons.AlertTriangle size={14} />
-                                                <span>若連不上，請確認電腦與樹莓派在同一個 WiFi/網段下。</span>
-                                            </div>
-                                        </div>
-                                    </Card>
-                                </div>
-                            </div>
-                        )}
-
-
-                        {/* 2. Python Setup (完整版 - 包含一鍵指令更新) */}
-                        {activeTab === 'python' && (
-                            <div className="space-y-6">
-                                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
-                                    <h3 className="font-bold text-blue-900 flex items-center gap-2"><Icons.Code /> Python 環境 (Bookworm)</h3>
-                                    <p className="text-blue-800 mt-1 text-sm">
-                                        Raspberry Pi OS <strong>預設已安裝 Python</strong>，但新版系統 (Bookworm) 強制要求使用「虛擬環境 (Virtual Environments)」來管理套件，以確保系統穩定性。
-                                    </p>
-                                </div>
-
-                                {/* 錯誤排除區塊 */}
-                                <Card className="p-6 border-l-4 border-l-red-500 bg-red-50">
-                                    <h4 className="font-bold text-red-800 mb-2 flex items-center gap-2"><Icons.ShieldAlert /> 遇到的錯誤：error: externally-managed-environment</h4>
-                                    <div className="text-sm text-red-700 space-y-2">
-                                        <p>當您試圖使用 <code>pip install</code> 安裝套件時，若出現這個紅字錯誤，是因為新版系統為了保護自己不被破壞，<strong>禁止直接在全域安裝套件</strong>。</p>
-                                        <div className="bg-white p-4 rounded-lg border border-red-200 text-slate-800 shadow-sm">
-                                            <strong className="block mb-2 text-slate-700">✅ 正確解決方案：使用虛擬環境 (venv)</strong>
-                                            <div className="font-mono text-xs space-y-2">
-                                                <div><span className="text-slate-500"># 1. 建立專案資料夾並進入</span><br/><code>mkdir my_project && cd my_project</code></div>
-                                                <div><span className="text-slate-500"># 2. 建立虛擬環境 (只需做一次)</span><br/><code className="text-blue-600 font-bold">python3 -m venv venv</code></div>
-                                                <div><span className="text-slate-500"># 3. 啟動環境 (每次重開終端機都要做)</span><br/><code className="text-green-600 font-bold">source venv/bin/activate</code></div>
-                                                <div><span className="text-slate-500"># 4. 現在可以安裝了 (提示字元前會有 (venv))</span><br/><code>pip install PySide6</code></div>
-                                            </div>
-                                        </div>
-                                        <div className="text-xs text-red-600 mt-2">* 備用方案 (不推薦)：如果您堅持要安裝在系統全域，可以加上 <code>--break-system-packages</code> 參數，但風險自負。</div>
-                                    </div>
-                                </Card>
-
-                                <div className="grid md:grid-cols-2 gap-6">
-                                    <Card className="p-6">
-                                        <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2"><Icons.Terminal /> 步驟 1: 檢查內建版本</h4>
-                                        <div className="space-y-2 text-sm text-slate-600">
-                                            <p>打開終端機 (Terminal)，輸入以下指令：</p>
-                                            <code className="block bg-slate-800 text-green-400 p-3 rounded font-mono text-xs">
-                                                pi@raspberrypi:~ $ python3 --version<br/>
-                                                <span className="text-slate-500">Python 3.11.2</span>
-                                            </code>
-                                            <p className="text-xs text-slate-500">* 通常是 Python 3.9 或 3.11，這對產測開發已經非常足夠。</p>
-                                        </div>
-                                    </Card>
-
-                                    <Card className="p-6 border-l-4 border-l-green-500">
-                                        <h4 className="font-bold text-green-800 mb-2 flex items-center gap-2"><Icons.Layers /> 步驟 2: 建立虛擬環境 (關鍵!)</h4>
-                                        <div className="bg-slate-100 p-3 rounded-lg border border-slate-200 font-mono text-xs">
-                                            # 1. 建立專案資料夾<br/>
-                                            mkdir my_tester && cd my_tester<br/><br/>
-                                            # 2. 建立虛擬環境 (名稱為 venv)<br/>
-                                            python3 -m venv venv<br/><br/>
-                                            # 3. 啟動環境 (看到前綴有 (venv) 代表成功)<br/>
-                                            source venv/bin/activate
-                                        </div>
-                                    </Card>
-
-                                    <Card className="p-6">
-                                        <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2"><Icons.Box /> 步驟 3: 安裝常用產測套件</h4>
-                                        <code className="block bg-slate-800 text-green-400 p-3 rounded font-mono text-xs">
-                                            (venv) $ pip install gpiozero<span className="text-slate-500"> # GPIO 控制</span><br/>
-                                            (venv) $ pip install pyserial<span className="text-slate-500"> # 串口通訊 (RS232)</span><br/>
-                                            (venv) $ pip install pandas<span className="text-slate-500"> # 數據處理/Excel</span><br/>
-                                            (venv) $ pip install RPi.GPIO<span className="text-slate-500"> # 底層 IO (備用)</span>
-                                        </code>
-                                    </Card>
-
-                                    <Card className="p-6">
-                                        <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2"><Icons.Monitor /> 步驟 4: 選擇開發工具 (IDE)</h4>
-                                        <div className="space-y-2 text-sm text-slate-600">
-                                            <div className="p-2 border-b">
-                                                <strong>新手推薦：Thonny IDE</strong>
-                                                <p className="text-xs">系統內建，輕量、簡單，可直接執行程式並查看變數，非常適合初學與除錯硬體。</p>
-                                            </div>
-                                            <div className="p-2">
-                                                <strong>進階推薦：VS Code</strong>
-                                                <p className="text-xs">功能強大，支援 Git、遠端開發 (Remote SSH)。適合大型產測專案。</p>
-                                                <code className="bg-slate-100 text-xs px-1">sudo apt install code</code>
-                                            </div>
-                                        </div>
-                                    </Card>
-
-                                    <Card className="p-6 col-span-1 md:col-span-2 bg-slate-50 border-2 border-slate-200">
-                                        <h4 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                                            <Icons.Play /> 步驟 5: 執行 Python 程式 (.py)
-                                        </h4>
-                                        <div className="space-y-4 text-sm text-slate-600">
-                                            <p>假設您有一個名為 <code>test_led.py</code> 的檔案。請在終端機 (Terminal) 依序輸入：</p>
-                                            <div className="grid md:grid-cols-2 gap-4">
-                                                <div className="bg-white p-4 rounded-lg border border-slate-300">
-                                                    <h5 className="font-bold text-slate-700 mb-2">方法 A：標準執行 (最推薦)</h5>
-                                                    <code className="block bg-slate-800 p-2 rounded text-white text-xs">
-                                                        # 1. 進入資料夾<br/>
-                                                        cd ~/my_tester<br/>
-                                                        # 2. 啟動環境<br/>
-                                                        source venv/bin/activate<br/>
-                                                        # 3. 執行<br/>
-                                                        python test_led.py
-                                                    </code>
-                                                </div>
-                                                <div className="bg-white p-4 rounded-lg border border-slate-300">
-                                                    <h5 className="font-bold text-slate-700 mb-2">方法 B：指定路徑執行 (進階)</h5>
-                                                    <p className="text-xs text-slate-500 mb-1">適合寫在自動化腳本或 crontab 中。</p>
-                                                    <code className="block bg-slate-800 p-2 rounded text-white text-xs break-all">
-                                                        /home/pi/my_tester/venv/bin/python /home/pi/my_tester/test_led.py
-                                                    </code>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Card>
-
-                                    <Card className="p-6 col-span-1 md:col-span-2 bg-white border border-slate-200">
-                                        <h4 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                                            <Icons.MousePointer /> 進階技巧：設定滑鼠「雙擊左鍵」直接執行
-                                        </h4>
-                                        <div className="grid md:grid-cols-2 gap-6 text-sm text-slate-600">
-                                            <div>
-                                                <h5 className="font-bold text-slate-700 mb-1">條件 1：加入 Shebang</h5>
-                                                <p className="text-xs mb-1">在程式碼的<strong>第一行</strong>加入：</p>
-                                                <code className="bg-slate-800 text-green-400 p-2 block rounded font-mono text-xs">#!/usr/bin/env python3</code>
-                                            </div>
-                                            <div>
-                                                <h5 className="font-bold text-slate-700 mb-1">條件 2：開啟「執行權限」</h5>
-                                                <p className="text-xs mb-1">對檔案點右鍵 → 屬性 → 權限 → 勾選「允許檔案作為程式執行」。</p>
-                                                <p className="text-xs">或者指令：<code className="bg-slate-100 px-1">chmod +x your_script.py</code></p>
-                                            </div>
-                                            <div className="col-span-1 md:col-span-2 bg-amber-50 p-3 rounded border border-amber-200">
-                                                <h5 className="font-bold text-amber-900 flex items-center gap-2 text-xs mb-1">
-                                                    <Icons.QuestionIcon /> 疑難排解：點了沒反應？
-                                                </h5>
-                                                <p className="text-xs text-amber-800">
-                                                    如果是 print 程式，視窗會秒關。解法：選擇「Execute in Terminal」或在程式最後加 <code>input()</code>。
-                                                </p>
-                                                <div className="grid grid-cols-2 gap-4 mt-2">
-                                                    <div>
-                                                        <strong className="text-xs text-amber-900">解法 A</strong>
-                                                        <p className="text-xs">選擇 <strong>Execute in Terminal</strong> (在終端機執行)。</p>
-                                                    </div>
-                                                    <div>
-                                                        <strong className="text-xs text-amber-900">解法 B</strong>
-                                                        <p className="text-xs">程式最後加 <code>input("按 Enter 離開...")</code> 防止秒關。</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Card>
-                                    <Card className="p-6 col-span-1 md:col-span-2 bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-200">
-                                        <h4 className="font-bold text-indigo-900 mb-2 flex items-center gap-2"><Icons.Command /> 提升效率：設定「一鍵指令」 (Alias)</h4>
-                                        <div className="bg-white p-4 rounded-lg border border-indigo-100 shadow-sm text-sm">
-                                            <p className="text-indigo-800 mb-4">
-                                                每次開發都要打 <code>cd</code> 和 <code>source</code> 很麻煩？我們可以設定一個自訂指令（例如輸入 <code>go</code>），系統就會自動幫你切換目錄並啟動虛擬環境。
-                                            </p>
-                                            
-                                            <div className="space-y-4">
-                                                <div>
-                                                    <h5 className="font-bold text-slate-700 mb-1">步驟 1：開啟設定檔</h5>
-                                                    <code className="bg-slate-800 text-green-400 px-2 py-1 rounded text-xs">nano ~/.bashrc</code>
-                                                </div>
-                                                
-                                                <div>
-                                                    <h5 className="font-bold text-slate-700 mb-1">步驟 2：在檔案最下方加入這行</h5>
-                                                    <p className="text-xs text-slate-500 mb-2">請捲動到檔案的<strong>最底部</strong> (按 PgDn 鍵或方向鍵下)，貼上這行指令：</p>
-                                                    <code className="block bg-indigo-50 p-2 rounded border border-indigo-100 text-xs font-mono text-indigo-900 break-all">
-                                                        alias go='cd ~/my_tester/L6_MBTest && source ~/my_tester/venv/bin/activate && python main.py'
-                                                    </code>
-                                                    <p className="text-[10px] text-slate-400 mt-1">
-                                                        * 指令解析：切換目錄 &rarr; 啟動虛擬環境 (使用絕對路徑較穩) &rarr; 自動執行程式
-                                                    </p>
-                                                </div>
-
-                                                <div>
-                                                    <h5 className="font-bold text-slate-700 mb-1">步驟 3：儲存並生效 (新手必看)</h5>
-                                                    <ol className="list-decimal pl-5 text-xs text-slate-600 space-y-1">
-                                                        <li>按下 <strong>Ctrl + O</strong> (寫入檔案)。</li>
-                                                        <li>按下 <strong>Enter</strong> (確認檔名)。</li>
-                                                        <li>按下 <strong>Ctrl + X</strong> (離開編輯器)。</li>
-                                                        <li>最後在終端機輸入：<code className="bg-slate-100 px-1">source ~/.bashrc</code> 讓設定生效。</li>
-                                                    </ol>
-                                                </div>
-                                            </div>
-
-                                            <div className="mt-4 pt-4 border-t border-indigo-100">
-                                                <p className="text-xs font-bold text-green-700 flex items-center gap-1 mb-1">
-                                                    <Icons.Check /> 完成！試試看：
-                                                </p>
-                                                <code className="block bg-black text-white p-2 rounded text-xs">
-                                                    pi@raspberrypi:~ $ go<br/>
-                                                    (venv) ... 程式開始自動執行 ...
-                                                </code>
-                                            </div>
-                                        </div>
-                                    </Card>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* 3. Troubleshoot (完整版) */}
-                        {activeTab === 'troubleshoot' && (
-                            <div className="space-y-6">
-                                <Card className="p-6 border-l-4 border-l-purple-500">
-                                    <h4 className="font-bold text-purple-800 mb-2 flex items-center gap-2"><Icons.Key /> 重設使用者密碼</h4>
-                                    <div className="text-sm text-slate-600">
-                                        <p>如果您在安裝時未設定密碼，或忘記了 <code>gt</code> 的密碼，可以使用以下指令重新設定：</p>
-                                        <div className="bg-slate-100 p-3 mt-2 rounded border border-slate-200 font-mono text-xs">
-                                            sudo passwd gt
-                                        </div>
-                                        <p className="text-xs text-slate-500 mt-2">
-                                            * 系統會提示您輸入新的密碼兩次。<br/>
-                                            * <strong>注意：</strong> 輸入密碼時螢幕不會顯示任何字元（這是正常的 Linux 安全機制），輸入完按 Enter 即可。
-                                        </p>
-                                    </div>
-                                </Card>
-                                <Card className="p-6 border-l-4 border-l-red-500 bg-red-50">
-                                    <h4 className="font-bold text-red-800 mb-2 flex items-center gap-2"><Icons.ZapOff /> 錯誤修復：ModuleNotFoundError: 'audioop'</h4>
-                                    <div className="text-sm text-slate-600">
-                                        <p className="font-bold text-slate-800">原因：Python 3.13 移除了 audioop。</p>
-                                        <div className="bg-white p-3 mt-2 rounded border border-red-200 text-xs">
-                                            <strong>解法一 (最快)：</strong> <code>pip install audioop-lts</code><br/>
-                                            <strong>解法二 (最穩)：</strong> 重建環境改用 Python 3.11
-                                        </div>
-                                    </div>
-                                </Card>
-                                <Card className="p-6 border-l-4 border-l-red-500 bg-red-50">
-                                    <h4 className="font-bold text-red-800 mb-2 flex items-center gap-2"><Icons.Bug /> 錯誤修復：PyQt5 / qmake not found</h4>
-                                    <div className="text-sm text-slate-600">
-                                        <p className="font-bold text-slate-800">原因：樹莓派缺少 Qt 編譯庫。</p>
-                                        <div className="bg-white p-3 mt-2 rounded border border-red-200 text-xs">
-                                            <strong>解法：</strong> 先安裝系統依賴：<br/>
-                                            <code>sudo apt install qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools -y</code>
-                                        </div>
-                                    </div>
-                                </Card>
-                                <Card className="p-6 border-l-4 border-l-orange-500 bg-orange-50">
-                                    <h4 className="font-bold text-orange-800 mb-2 flex items-center gap-2"><Icons.Hourglass /> pip install 卡住不動？</h4>
-                                    <div className="text-sm text-slate-600">
-                                        <p>這是因為樹莓派正在編譯大型套件 (如 PyQt5)。</p>
-                                        <div className="bg-white p-3 mt-2 rounded border border-orange-200 text-xs">
-                                            <strong>解法：</strong> 使用系統套件 + 繼承環境<br/>
-                                            1. <code>sudo apt install python3-pyqt5 python3-pandas python3-numpy</code><br/>
-                                            2. <code>python3 -m venv venv --system-site-packages</code>
-                                        </div>
-                                    </div>
-                                </Card>
-                                <Card className="p-6 border-l-4 border-l-blue-500">
-                                    <h4 className="font-bold text-slate-800 mb-4 flex items-center gap-2"><Icons.Cable /> 查詢 UART / USB 編號</h4>
-                                    <div className="space-y-4">
-                                        <div className="bg-white p-4 rounded-lg border border-blue-200">
-                                            <div className="flex justify-between items-center mb-2">
-                                                <h6 className="font-bold text-xs flex items-center gap-2"><Icons.Eye /> USB 自動偵測腳本 (懶人包)</h6>
-                                                <button onClick={handleCopyScript} className="flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-600 rounded text-xs">
-                                                    {copied ? <Icons.Check size={14}/> : <Icons.Copy size={14}/>} {copied ? "已複製" : "複製"}
-                                                </button>
-                                            </div>
-                                            <pre className="bg-slate-800 text-green-300 p-3 rounded font-mono text-[10px] overflow-x-auto">{usbDetectionScript}</pre>
-                                            <div className="text-xs text-slate-500 mt-2 bg-slate-50 p-2 rounded">
-                                                <strong>Tip:</strong> 執行後，直接選取並複製最右邊的長路徑到您的程式中 (例如 <code>port = "/dev/serial/by-id/..."</code>)，這樣永遠不會連錯！
-                                            </div>
-                                        </div>
-
-                                        <div className="bg-blue-50 p-4 rounded-lg">
-                                            <h5 className="font-bold text-blue-900 text-sm mb-2 flex items-center gap-2"><Icons.Usb /> 驅動安裝：CH340 / USB-TTL 轉接器</h5>
-                                            <p className="text-xs text-blue-800 mb-2">
-                                                <strong>好消息：</strong> Raspberry Pi OS (Linux Kernel 5.x 以上) 已經內建 CH340 晶片的驅動程式 (ch341 module)，通常隨插即用，無需手動安裝驅動。
-                                            </p>
-                                            <div className="bg-white p-2 rounded border border-blue-200">
-                                                <strong className="text-xs text-slate-700">如何驗證裝置是否正常抓到？</strong>
-                                                <ul className="list-decimal pl-4 text-xs text-slate-600 mt-1">
-                                                    <li><code>lsusb</code>：應能看到類似 <strong>QinHeng Electronics HL-340 USB-Serial adapter</strong> 的文字。</li>
-                                                    <li><code>dmesg | grep ch34</code>：若正常，會看到 <strong>ch341-uart converter now attached to ttyUSB0</strong>。</li>
-                                                    <li><code>ls /dev/ttyUSB*</code>：確認裝置路徑，通常是 <code>/dev/ttyUSB0</code>。如果插了多個，可能是 ttyUSB1...</li>
-                                                </ul>
-                                            </div>
-                                            <div className="text-xs text-amber-600 mt-2">
-                                                ⚠️ 還是抓不到？檢查 USB 線 (很多 Micro-USB 線僅有充電功能)、供電是否不足。
-                                            </div>
-                                            <div className="mt-4 pt-2 border-t border-blue-200">
-                                                <strong className="text-xs text-blue-900">進階：分辨多個 USB 裝置 (CH340 vs FT232)</strong>
-                                                <p className="text-xs text-slate-600 mt-1">
-                                                    使用指令 <code>ls -l /dev/serial/by-id/</code> 可以直接看到晶片名稱與對應的 ttyUSB 編號。
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Card>
-                                <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
-                                    <h3 className="font-bold text-amber-900 flex items-center gap-2">
-                                        <Icons.AlertTriangle /> HDMI 無畫面 / 黑屏
-                                    </h3>
-                                    <p className="text-amber-800 mt-1 text-sm">
-                                        修改 SD 卡 <code>config.txt</code>：<code>hdmi_force_hotplug=1</code>
-                                    </p>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* 4. Software (完整版) */}
-                        {activeTab === 'software' && (
-                            <div className="space-y-6">
-                                <div className="bg-slate-800 border-l-4 border-yellow-500 p-4 rounded-r-lg">
-                                    <h3 className="font-bold text-yellow-500 flex items-center gap-2"><Icons.Radio /> Serial 串口調試神器</h3>
-                                    <p className="text-slate-300 mt-1 text-sm">替代 Windows SSCOM 的最佳選擇。</p>
-                                </div>
-                                <div className="grid md:grid-cols-2 gap-6">
-                                    <Card className="p-6 border-l-4 border-l-green-500">
-                                        <h4 className="font-bold text-slate-800 mb-2">1. CuteCom</h4>
-                                        <p className="text-xs text-slate-600 mb-2">安裝簡單，有歷史紀錄，支援 Hex/ASCII。</p>
-                                        <code className="bg-slate-100 px-2 py-1 rounded text-xs">sudo apt install cutecom</code>
-                                    </Card>
-                                    <Card className="p-6 border-l-4 border-l-blue-500">
-                                        <h4 className="font-bold text-slate-800 mb-2">2. GtkTerm</h4>
-                                        <p className="text-xs text-slate-600 mb-2">輕量穩定，支援 Hex View。</p>
-                                        <code className="bg-slate-100 px-2 py-1 rounded text-xs">sudo apt install gtkterm</code>
-                                    </Card>
-                                    <Card className="p-6 border-l-4 border-l-purple-500">
-                                        <h4 className="font-bold text-slate-800 mb-2">3. Moserial</h4>
-                                        <p className="text-xs text-slate-600 mb-2">支援 Profile 設定檔儲存。</p>
-                                        <code className="bg-slate-100 px-2 py-1 rounded text-xs">sudo apt install moserial</code>
-                                    </Card>
-                                    <Card className="p-6 border-l-4 border-l-orange-500">
-                                        <h4 className="font-bold text-slate-800 mb-2">4. ComTool (Python)</h4>
-                                        <p className="text-xs text-slate-600 mb-2">最強推薦！支援多按鈕指令 (需解決 audioop)。</p>
-                                        <div className="bg-slate-100 p-2 rounded border border-slate-200 mt-2">
-                                            <p className="text-xs font-mono text-slate-500 mb-1">啟動指令：</p>
-                                            <code className="text-green-700 font-bold block">source venv/bin/activate</code>
-                                            <code className="text-green-700 font-bold block">comtool</code>
-                                        </div>
-                                    </Card>
-                                </div>
-                                <div className="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-r-lg mt-6">
-                                    <h3 className="font-bold text-purple-900 flex items-center gap-2"><Icons.Table /> CSV 觀看工具</h3>
-                                </div>
-                                <div className="grid md:grid-cols-2 gap-6">
-                                    <Card className="p-6"><h4 className="font-bold text-slate-800">LibreOffice Calc</h4><p className="text-xs text-slate-600">功能如 Excel 完整。</p><code className="bg-slate-100 px-2 py-1 rounded text-xs mt-1 block w-fit">sudo apt install libreoffice</code></Card>
-                                    <Card className="p-6"><h4 className="font-bold text-slate-800">Visidata</h4><p className="text-xs text-slate-600">終端機內的 Excel，遠端最愛。</p><code className="bg-slate-100 px-2 py-1 rounded text-xs mt-1 block w-fit">sudo apt install visidata</code></Card>
-                                    <Card className="p-6"><h4 className="font-bold text-slate-800">Gnumeric</h4><p className="text-xs text-slate-600">輕量級試算表，秒開。</p><code className="bg-slate-100 px-2 py-1 rounded text-xs mt-1 block w-fit">sudo apt install gnumeric</code></Card>
-                                    <Card className="p-6"><h4 className="font-bold text-slate-800">VS Code + Rainbow CSV</h4><p className="text-xs text-slate-600">開發者首選，彩色顯示。</p></Card>
-                                </div>
-                            </div>
-                        )}
-                        
-                        {/* 5. Remote (完整版) */}
-                        {activeTab === 'remote' && (
-                             <div className="space-y-6">
-                                 <Card className="p-6">
-                                    <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2"><Icons.Monitor /> 安裝 AnyDesk (Bookworm 專用)</h4>
-                                    <div className="text-sm text-slate-600 space-y-2">
-                                        <p className="font-bold text-amber-600">⚠️ 關鍵設定：切換至 X11 視窗系統 (raspi-config &gt; Advanced Options &gt; Wayland &gt; X11)</p>
-                                        <div className="bg-slate-100 p-3 rounded font-mono text-xs">
-                                            # 1. 加入金鑰<br/>
-                                            wget -qO - https://keys.anydesk.com/repos/DEB-GPG-KEY | gpg --dearmor | sudo tee /usr/share/keyrings/anydesk-keyring.gpg &gt; /dev/null<br/><br/>
-                                            # 2. 加入源<br/>
-                                            echo "deb [signed-by=/usr/share/keyrings/anydesk-keyring.gpg] http://deb.anydesk.com/ all main" | sudo tee /etc/apt/sources.list.d/anydesk-stable.list<br/><br/>
-                                            # 3. 安裝<br/>
-                                            sudo apt update && sudo apt install anydesk -y
-                                        </div>
-                                    </div>
-                                 </Card>
-                                 <Card className="p-6 border-l-4 border-l-green-500">
-                                    <h4 className="font-bold text-green-800 mb-2 flex items-center gap-2"><Icons.Activity /> 安裝後檢查</h4>
-                                    <code className="block bg-slate-100 p-2 rounded text-xs font-mono">
-                                        sudo systemctl start anydesk<br/>
-                                        sudo systemctl enable anydesk<br/>
-                                        anydesk --get-id
-                                    </code>
-                                 </Card>
-                                 <Card className="p-6 border-l-4 border-l-purple-500">
-                                    <h4 className="font-bold text-purple-800 mb-2 flex items-center gap-2"><Icons.Lock /> 設定固定密碼</h4>
-                                    <p className="text-sm text-slate-600">進入 AnyDesk 設定 &gt; Security &gt; Unlock &gt; 勾選 Enable unattended access &gt; 設定密碼。</p>
-                                 </Card>
-                                 <Card className="p-6">
-                                     <h4 className="font-bold text-slate-800 mb-2">備用方案：RealVNC</h4>
-                                     <p className="text-sm text-slate-600 mb-2">若 AnyDesk 有相容性問題，可使用官方內建的 VNC。</p>
-                                     <code className="bg-slate-100 px-2 py-1 rounded text-xs">sudo raspi-config &gt; Interface Options &gt; VNC &gt; Yes</code>
-                                 </Card>
-                             </div>
-                        )}
-
-                        {/* 6. Hardware (完整版) */}
-                        {activeTab === 'hardware' && (
-                            <div className="space-y-6 animate-fadeIn">
-                                <Card className="p-6"><h4 className="font-bold text-slate-800 mb-2"><Icons.Zap /> 電源供應</h4><p className="text-sm text-slate-600">務必使用 5V/3A 原廠電源或明緯導軌電源，嚴禁手機充電頭。</p></Card>
-                                <Card className="p-6"><h4 className="font-bold text-slate-800 mb-2"><Icons.HardDrive /> 儲存策略</h4><p className="text-sm text-slate-600">強烈建議使用 USB SSD 開機，避免 SD 卡因寫入過多損壞。</p></Card>
-                                <Card className="p-6"><h4 className="font-bold text-slate-800 mb-2"><Icons.Cpu /> 訊號隔離</h4><p className="text-sm text-slate-600">使用光耦隔離 Relay 與電位轉換器 (3.3V vs 5V)，保護 CPU。</p></Card>
-                            </div>
-                        )}
-
-                        {/* 7. Specs (完整版 - GPIO 修復) */}
+                        {/* 2. Specs (完整修復：整合內容，移除重複) */}
                         {activeTab === 'specs' && (
                              <div className="grid md:grid-cols-2 gap-6 animate-fadeIn">
+                                 {/* 左側：GPIO 對應表 */}
                                  <Card className="p-6">
-                                     <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2"><Icons.Grid /> 介面總覽</h4>
+                                     <h4 className="font-bold text-slate-800 mb-4 flex items-center gap-2"><Icons.Grid /> 40-Pin GPIO 定義</h4>
                                      <div className="bg-slate-50 p-4 rounded border border-slate-200">
-                                        <div className="text-center text-xs text-slate-500">
-                                            <div className="mb-2 font-bold">40-Pin GPIO Header 定義</div>
-                                            {/* 使用 Flex column 確保垂直排列 */}
-                                            <div className="flex flex-col gap-1">
+                                        <div className="text-center text-xs text-slate-500 mb-4">
+                                            <div className="flex justify-center gap-4 text-[10px] mb-2">
+                                                <div className="flex items-center gap-1"><span className="w-3 h-3 bg-red-500 rounded-full"></span>5V</div>
+                                                <div className="flex items-center gap-1"><span className="w-3 h-3 bg-orange-400 rounded-full"></span>3.3V</div>
+                                                <div className="flex items-center gap-1"><span className="w-3 h-3 bg-slate-800 rounded-full"></span>GND</div>
+                                                <div className="flex items-center gap-1"><span className="w-3 h-3 bg-green-500 rounded-full"></span>GPIO</div>
+                                            </div>
+                                            {/* 修正：列表對齊 */}
+                                            <div className="flex flex-col gap-1 max-h-[500px] overflow-y-auto no-scrollbar">
                                                 <PinRow numLeft={1} nameLeft="3.3V" typeLeft="power3" numRight={2} nameRight="5V" typeRight="power" />
                                                 <PinRow numLeft={3} nameLeft="GPIO 2 (SDA)" typeLeft="special" numRight={4} nameRight="5V" typeRight="power" />
                                                 <PinRow numLeft={5} nameLeft="GPIO 3 (SCL)" typeLeft="special" numRight={6} nameRight="GND" typeRight="gnd" />
@@ -805,114 +336,223 @@
                                         </div>
                                      </div>
                                  </Card>
-                                 <Card className="p-6">
-                                     <h4 className="font-bold text-slate-800 mb-2">核心規格 & 介面詳解</h4>
-                                     <ul className="text-sm text-slate-600 space-y-4">
-                                         <li className="flex items-start gap-3">
-                                            <div className="mt-1"><Icons.Zap /></div>
-                                            <div>
-                                                <strong>電源輸入 (Power):</strong><br/>
-                                                USB-C 連接器，需求 5V / 3A DC。這是板子供電的主要來源。
-                                            </div>
-                                         </li>
-                                         <li className="flex items-start gap-3">
-                                            <div className="mt-1"><Icons.Monitor /></div>
-                                            <div>
-                                                <strong>視訊輸出 (Video):</strong><br/>
-                                                2x Micro HDMI 接口，支援雙螢幕 4K@60Hz 解析度輸出。
-                                            </div>
-                                         </li>
-                                         <li className="flex items-start gap-3">
-                                            <div className="mt-1"><Icons.Usb /></div>
-                                            <div>
-                                                <strong>USB 介面:</strong><br/>
-                                                2x USB 3.0 (藍色，高速傳輸), 2x USB 2.0 (黑色，周邊設備)
-                                            </div>
-                                         </li>
-                                         <li className="flex items-start gap-3">
-                                            <div className="mt-1"><Icons.Wifi /></div>
-                                            <div>
-                                                <strong>網路 (Network):</strong><br/>
-                                                Gigabit Ethernet (RJ45), WiFi 5 (802.11ac), Bluetooth 5.0
-                                            </div>
-                                         </li>
-                                     </ul>
-                                 </Card>
-                             </div>
-                        )}
 
-                        {/* 8. Gallery (完整版) */}
-                        {activeTab === 'gallery' && (
-                             <div className="grid md:grid-cols-2 gap-4 animate-fadeIn">
-                                 {mockImages.map(img => (
-                                     <div key={img.id} className="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-200">
-                                         <div className="h-40 bg-slate-100 flex items-center justify-center text-slate-300 relative group">
-                                            {/* 使用 CSS 模擬圖片，或在真實環境中使用 img 標籤 */}
-                                            <span className="text-4xl group-hover:scale-110 transition-transform duration-500">🖼️</span>
-                                            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all"></div>
-                                         </div>
-                                         <div className="p-4">
-                                             <div className="flex justify-between items-center mb-1">
-                                                <h3 className="font-bold text-slate-800">{img.title}</h3>
-                                                <Badge>{img.tag}</Badge>
-                                             </div>
-                                             <p className="text-xs text-slate-600">{img.desc}</p>
-                                         </div>
-                                     </div>
-                                 ))}
-                                 <div className="col-span-1 md:col-span-2 bg-slate-800 text-slate-200 p-4 rounded-lg mt-4">
-                                    <h4 className="font-bold mb-2 flex items-center gap-2"><Icons.Eye /> 視覺化提示</h4>
-                                    <ul className="list-disc pl-5 text-sm space-y-1">
-                                        <li><strong>實體配置：</strong> 樹莓派通常固定在電控箱內的 DIN Rail (導軌) 上。</li>
-                                        <li><strong>螢幕：</strong> 推薦使用 Raspberry Pi 官方 7吋觸控螢幕，整合度最高。</li>
-                                        <li><strong>接線：</strong> 盡量使用 PCB 轉接板 (HAT) 拉出 GPIO，避免杜邦線脫落。</li>
-                                    </ul>
+                                 {/* 右側：圖片與核心規格 */}
+                                 <div className="space-y-6">
+                                    <Card className="p-6">
+                                        <h4 className="font-bold text-slate-800 mb-4 flex items-center gap-2"><Icons.Image /> 硬體圖解</h4>
+                                        <div className="bg-slate-50 p-2 rounded border border-slate-200">
+                                            <img 
+                                                src="https://www.oursteam.com.tw/upload/images/20231002_050808.png" 
+                                                alt="Raspberry Pi 4 Model B Pinout" 
+                                                className="w-full h-auto rounded-lg shadow-sm hover:scale-[1.02] transition-transform duration-300"
+                                            />
+                                        </div>
+                                    </Card>
+                                    
+                                    <Card className="p-6">
+                                        <h4 className="font-bold text-slate-800 mb-4 flex items-center gap-2"><Icons.Cpu /> 核心規格詳解</h4>
+                                        <ul className="text-sm text-slate-600 space-y-4">
+                                            <li className="flex items-start gap-3 p-3 bg-red-50 rounded-lg">
+                                                <Icons.Zap />
+                                                <div><strong>電源輸入:</strong> USB-C (5V/3A DC)。板子供電主要來源。</div>
+                                            </li>
+                                            <li className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
+                                                <Icons.Monitor />
+                                                <div><strong>視訊輸出:</strong> 2x Micro HDMI (支援 4K@60Hz)。</div>
+                                            </li>
+                                            <li className="flex items-start gap-3 p-3 bg-indigo-50 rounded-lg">
+                                                <Icons.Usb />
+                                                <div><strong>USB 介面:</strong> 2x USB 3.0 (高速), 2x USB 2.0。</div>
+                                            </li>
+                                            <li className="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
+                                                <Icons.Wifi />
+                                                <div><strong>網路連結:</strong> Gigabit Ethernet (RJ45), WiFi 5, BT 5.0。</div>
+                                            </li>
+                                        </ul>
+                                    </Card>
                                  </div>
                              </div>
                         )}
-                        
-                        {/* 9. Tips (完整版) */}
-                        {activeTab === 'tips' && (
+
+                        {/* 1.5 File Share (Samba) */}
+                        {activeTab === 'fileshare' && (
                             <div className="space-y-6 animate-fadeIn">
-                                <div className="bg-slate-800 text-slate-200 p-4 rounded-lg border-l-4 border-amber-500">
-                                    <h3 className="font-bold text-lg mb-1">🛡️ 產測軟體架構：穩定運行的秘訣</h3>
-                                    <p className="text-sm text-slate-400">
-                                        治具程式與一般 App 不同，它必須能處理「作業員誤觸」、「設備斷線」、「突然斷電」等異常狀況，並自動恢復。
-                                    </p>
+                                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                                    <h3 className="font-bold text-blue-900 flex items-center gap-2">
+                                        <Icons.Share2 /> 網路芳鄰 (Samba)
+                                    </h3>
+                                    <p className="text-blue-800 mt-1 text-sm">讓 Windows 電腦可以像存取本機資料夾一樣存取樹莓派的檔案。</p>
                                 </div>
                                 <div className="grid md:grid-cols-2 gap-6">
                                     <Card className="p-6">
-                                        <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2"><Icons.PowerOff /> 4. 開關機控制 (Power Control)</h4>
-                                        <div className="space-y-3 text-sm text-slate-600">
-                                            <p>樹莓派關機後不會自己醒來，解決方法：</p>
-                                            <ul className="list-disc pl-5 space-y-2">
-                                                <li>
-                                                    <strong>原生秘技 (GPIO 3)：</strong><br/>
-                                                    將 Pin 5 (SCL/GPIO 3) 與 Pin 6 (GND) 短路一下，即可喚醒關機狀態的樹莓派。<br/>
-                                                    <span className="text-xs text-blue-600">* 適合做成治具上的實體按鈕。</span>
-                                                </li>
-                                                <li>
-                                                    <strong>硬體解法：</strong><br/>
-                                                    購買帶有實體開關的 USB-C 電源線，直接切斷再供電。
-                                                </li>
-                                            </ul>
+                                        <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2"><Icons.Terminal /> 步驟 1: 安裝 Samba</h4>
+                                        <code className="block bg-slate-800 text-green-400 p-3 rounded font-mono text-xs">
+                                            sudo apt update && sudo apt install samba -y
+                                        </code>
+                                    </Card>
+
+                                    <Card className="p-6 border-l-4 border-l-purple-500">
+                                        <h4 className="font-bold text-purple-800 mb-2 flex items-center gap-2"><Icons.Settings /> 步驟 2: 修改設定檔</h4>
+                                        <div className="space-y-2 text-sm text-slate-600">
+                                            <p>開啟設定檔：<code>sudo nano /etc/samba/smb.conf</code></p>
+                                            <div className="bg-slate-100 p-2 rounded border border-slate-200 font-mono text-xs text-slate-800">
+                                                [gt]<br/>
+                                                path = /home/gt<br/>
+                                                browseable = yes<br/>
+                                                writeable = yes<br/>
+                                                only guest = no<br/>
+                                                create mask = 0644<br/>
+                                                directory mask = 0755<br/>
+                                                public = no
+                                            </div>
                                         </div>
                                     </Card>
-                                    <Card className="p-6"><h4 className="font-bold text-slate-800 mb-2"><Icons.Activity /> 1. 看門狗 (Watchdog)</h4><p className="text-sm text-slate-600">啟用硬體看門狗，當機時自動重啟，無需人工介入。<br/><code>sudo apt install watchdog</code></p></Card>
-                                    <Card className="p-6"><h4 className="font-bold text-slate-800 mb-2"><Icons.Lock /> 2. 檔案保護 (OverlayFS)</h4><p className="text-sm text-slate-600">啟用唯讀模式，防止斷電造成系統損毀。<br/><code>raspi-config &gt; Performance &gt; OverlayFS</code></p></Card>
-                                    <Card className="p-6 col-span-1 md:col-span-2 bg-slate-900 text-slate-300">
-                                        <h4 className="font-bold text-white mb-2"><Icons.Code /> 3. 狀態機 (State Machine)</h4>
-                                        <p className="text-xs mb-2">產測程式架構範例</p>
-                                        <pre className="bg-black p-3 rounded font-mono text-xs overflow-x-auto">
-{`class State(Enum):
-    IDLE = 0; TESTING = 1; PASS = 2; FAIL = 3; ERROR = 4
+                                    
+                                    <Card className="p-6 border-l-4 border-l-green-500">
+                                        <h4 className="font-bold text-green-800 mb-2 flex items-center gap-2"><Icons.Folder /> 進階: 分享第二顆硬碟/USB</h4>
+                                        <div className="bg-slate-100 p-2 rounded border border-slate-200 font-mono text-xs text-slate-800">
+                                            [USB]<br/>
+                                            path = /media<br/>
+                                            browseable = yes<br/>
+                                            writeable = yes<br/>
+                                            public = no
+                                        </div>
+                                        <p className="text-xs text-amber-600 mt-2 flex items-center gap-1"><Icons.AlertTriangle size={12}/> 此設定會分享整個 /media 目錄下所有掛載裝置。</p>
+                                    </Card>
 
-def main_loop():
-    while True:
-        if state == State.IDLE: ...`}
-                                        </pre>
+                                    <Card className="p-6">
+                                        <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2"><Icons.Lock /> 步驟 3: 設定連線密碼</h4>
+                                        <code className="block bg-slate-800 text-green-400 p-3 rounded font-mono text-xs">
+                                            sudo smbpasswd -a gt<br/>
+                                            sudo systemctl restart smbd
+                                        </code>
+                                    </Card>
+
+                                    <Card className="p-6 border-l-4 border-l-blue-500 col-span-1 md:col-span-2">
+                                        <h4 className="font-bold text-blue-800 mb-2 flex items-center gap-2"><Icons.Monitor /> 步驟 4: Windows 連線</h4>
+                                        <div className="space-y-2 text-sm text-slate-600 font-mono">
+                                            \\192.168.1.100\gt<br/>
+                                            \\192.168.1.100\USB
+                                        </div>
                                     </Card>
                                 </div>
+                            </div>
+                        )}
+
+                        {/* 3. Python Setup (完整內容) */}
+                        {activeTab === 'python' && (
+                            <div className="space-y-6 animate-fadeIn">
+                                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                                    <h3 className="font-bold text-blue-900 flex items-center gap-2"><Icons.Code /> Python 開發環境</h3>
+                                    <p className="text-blue-800 mt-1 text-sm">Raspberry Pi OS 預設已安裝 Python，但新版系統 (Bookworm) 強制要求使用「虛擬環境」。</p>
+                                </div>
+                                <Card className="p-6 border-l-4 border-l-red-500 bg-red-50">
+                                    <h4 className="font-bold text-red-800 mb-2 flex items-center gap-2"><Icons.ShieldAlert /> error: externally-managed-environment</h4>
+                                    <p className="text-sm text-red-700">當試圖用 <code>pip install</code> 安裝套件出現此紅字錯誤，請使用 <strong>venv</strong>。</p>
+                                    <div className="bg-white p-4 rounded-lg border border-red-200 font-mono text-xs mt-3">
+                                        python3 -m venv venv<br/>
+                                        source venv/bin/activate<br/>
+                                        pip install PySide6
+                                    </div>
+                                </Card>
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    <Card className="p-6"><h4 className="font-bold text-slate-800 mb-2">常用套件</h4><code className="block bg-slate-800 text-green-400 p-2 rounded text-xs">pip install gpiozero pyserial pandas</code></Card>
+                                    <Card className="p-6"><h4 className="font-bold text-slate-800 mb-2">執行程式</h4><code className="block bg-slate-100 p-2 rounded text-xs">python test_led.py</code></Card>
+                                    <Card className="p-6 col-span-1 md:col-span-2 bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-200 shadow-sm">
+                                        <h4 className="font-bold text-indigo-900 mb-4 flex items-center gap-2"><Icons.Command /> 設定「一鍵指令」 (Alias)</h4>
+                                        <div className="space-y-4 text-xs">
+                                            <p>1. 開啟設定檔：<code>nano ~/.bashrc</code></p>
+                                            <p>2. 到最底部貼上：<code className="bg-indigo-50 p-1 block border rounded">alias go='cd ~/my_tester/L6_MBTest && source ~/my_tester/venv/bin/activate && python main.py'</code></p>
+                                            <p>3. 儲存：<code>Ctrl+O</code> &rarr; <code>Enter</code> &rarr; <code>Ctrl+X</code></p>
+                                            <p>4. 生效：<code>source ~/.bashrc</code>。以後打 <strong>go</strong> 即可開跑。</p>
+                                        </div>
+                                    </Card>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* 4. Hardware 選購 (完整版) */}
+                        {activeTab === 'hardware' && (
+                            <div className="space-y-6 animate-fadeIn">
+                                <Card className="p-6 border-l-4 border-l-amber-500">
+                                    <h4 className="font-bold text-slate-800 mb-4 flex items-center gap-2"><Icons.Zap /> 電源供應標準</h4>
+                                    <p className="text-sm text-slate-600">80% 的當機來自電源。務必使用 <strong>5V/3A</strong> 原廠頭或明緯電源。嚴禁使用手機充電頭、品質低劣的 USB 線 (壓降過大)。</p>
+                                </Card>
+                                <Card className="p-6 border-l-4 border-l-blue-500">
+                                    <h4 className="font-bold text-slate-800 mb-4 flex items-center gap-2"><Icons.Cpu /> 訊號隔離 (Isolation)</h4>
+                                    <p className="text-sm text-slate-600">治具常產生雜訊。絕對不要將 GPIO 直接連接電感性負載。務必使用帶有<strong>光耦隔離</strong>的 Relay 模組或電位轉換器 (Logic Level Converter)。</p>
+                                </Card>
+                            </div>
+                        )}
+
+                        {/* 5. Software (完整版) */}
+                        {activeTab === 'software' && (
+                            <div className="space-y-6 animate-fadeIn">
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    <Card className="p-6">
+                                        <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2"><Icons.Radio /> Serial 串口神器</h4>
+                                        <div className="space-y-2 text-xs">
+                                            <p><strong>CuteCom:</strong> GUI 工具，安裝簡單，有歷史紀錄。</p>
+                                            <p><strong>ComTool (Python):</strong> 最強推薦！支援多按鈕、波形顯示。</p>
+                                            <code className="bg-slate-100 p-1 rounded">sudo apt install cutecom</code>
+                                        </div>
+                                    </Card>
+                                    <Card className="p-6">
+                                        <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2"><Icons.Table /> CSV 觀看工具</h4>
+                                        <div className="space-y-2 text-xs">
+                                            <p><strong>LibreOffice Calc:</strong> 樹莓派界的 Excel，功能最完整。</p>
+                                            <p><strong>Visidata:</strong> 終端機內的 Excel 神器，遠端必備。</p>
+                                            <code className="bg-slate-100 p-1 rounded">sudo apt install visidata</code>
+                                        </div>
+                                    </Card>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* 6. Troubleshoot (完整內容) */}
+                        {activeTab === 'troubleshoot' && (
+                            <div className="space-y-6 animate-fadeIn">
+                                <Card className="p-6 border-l-4 border-l-purple-500 bg-purple-50">
+                                    <h4 className="font-bold text-purple-800 mb-2 flex items-center gap-2"><Icons.Key /> 重設 <code>gt</code> 密碼</h4>
+                                    <code className="block bg-slate-800 text-green-400 p-2 rounded text-xs">sudo passwd gt</code>
+                                    <p className="text-[10px] text-slate-500 mt-1">* 輸入新密碼兩次。輸入時螢幕不顯示字元是正常的安全機制。</p>
+                                </Card>
+                                <Card className="p-6 border-l-4 border-l-red-500 bg-red-50">
+                                    <h4 className="font-bold text-red-800 mb-2 flex items-center gap-2"><Icons.ZapOff /> 錯誤：No module named 'audioop'</h4>
+                                    <p className="text-xs text-red-700">Python 3.13 移除了此模組，解決方案：</p>
+                                    <code className="block bg-white p-2 rounded border border-red-200 text-xs mt-2">pip install audioop-lts</code>
+                                </Card>
+                                <Card className="p-6 border-l-4 border-l-orange-500 bg-orange-50">
+                                    <h4 className="font-bold text-orange-800 mb-2 flex items-center gap-2"><Icons.Hourglass /> pip install 卡住不動？</h4>
+                                    <p className="text-xs text-slate-600 mb-2">原因：試圖編譯大型套件 (如 PyQt5)。改用 apt 安裝：</p>
+                                    <code className="block bg-white p-2 rounded border border-orange-200 text-xs">sudo apt install python3-pyqt5 -y</code>
+                                </Card>
+                            </div>
+                        )}
+
+                        {/* 7. Tips (完整內容) */}
+                        {activeTab === 'tips' && (
+                            <div className="space-y-6 animate-fadeIn">
+                                <Card className="p-6 border-l-4 border-l-amber-500">
+                                    <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2"><Icons.PowerOff /> 實體開機鍵製作 (Wake-up)</h4>
+                                    <p className="text-sm text-slate-600 mb-2">要在不斷電情況下喚醒關機狀態的 4B：</p>
+                                    <ul className="list-disc pl-5 text-sm space-y-2">
+                                        <li><strong>GPIO 3 開機：</strong> 將 <strong>Pin 5 (GPIO 3)</strong> 與 <strong>Pin 6 (GND)</strong> 短路一下即可啟動。</li>
+                                        <li><strong>應用：</strong> 接一個無段按鈕在治具外殼，充當實體開機鍵。</li>
+                                    </ul>
+                                </Card>
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    <Card className="p-6"><h4 className="font-bold text-slate-800 mb-1 flex items-center gap-2"><Icons.Activity /> 硬體看門狗</h4><p className="text-xs"><code>sudo apt install watchdog</code>。系統當機時 15 秒自動重啟。</p></Card>
+                                    <Card className="p-6"><h4 className="font-bold text-slate-800 mb-1 flex items-center gap-2"><Icons.Lock /> 檔案保護 (OverlayFS)</h4><p className="text-xs">啟用唯讀模式，防止非法斷電造成 SD 卡檔案損壞。</p></Card>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* 其他分頁 placeholders (Gallery/Remote 已整合在上述邏輯中) */}
+                        {['remote', 'gallery'].includes(activeTab) && (
+                            <div className="p-8 text-center text-slate-400 bg-white rounded-xl border border-slate-200">
+                                <p>此分頁內容在離線版中已合併或簡化，詳細請參閱相關教學卡片。</p>
                             </div>
                         )}
 
